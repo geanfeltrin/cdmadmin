@@ -8,6 +8,7 @@ import { Row, Col } from "reactstrap";
 // import Users from "../../components/Users";
 // import Category from "../../components/Category";
 import Posts from "../../components/Posts";
+import ImgDropAndCrop from "../../components/ImgDropAndCrop";
 
 export default class Dashboard extends Component {
   render() {

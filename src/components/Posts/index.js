@@ -5,9 +5,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import PostActions from "../../store/ducks/post";
-import CategoryActions from "../../store/ducks/category";
+
 import api from "../../services/api";
 import Select from "react-select";
+import { uniqueId } from "lodash";
+import filesize from "filesize";
 
 import Modal from "../Modal";
 import {
@@ -18,12 +20,12 @@ import {
   Form,
   FormGroup,
   Input,
-  Col,
-  Badge,
-  Media
+  Col
 } from "reactstrap";
 
 import { Container } from "./styles";
+import ImgDropAndCrop from "../ImgDropAndCrop";
+import FileList from "../FileList";
 
 class Posts extends Component {
   static propTypes = {
@@ -50,7 +52,8 @@ class Posts extends Component {
     selectedOption: null,
     category: "",
     subCategory: null,
-    selectedSubCategory: null
+    selectedSubCategory: null,
+    uploadedFiles: []
   };
 
   handleInputChange = e => {
@@ -72,14 +75,77 @@ class Posts extends Component {
       subCategory: selectedOption.subCategories,
       selectedSubCategory: null
     });
-    console.log(`Option selected:`, selectedOption);
   };
 
   handleChange2 = selectedSubCategory => {
     this.setState({
       selectedSubCategory
     });
-    console.log(`Option selected:`, selectedSubCategory);
+  };
+
+  handleUpload = files => {
+    const uploadedFiles = files.map(file => ({
+      file,
+      id: uniqueId(),
+      name: file.name,
+      readableSize: filesize(file.size),
+      preview: URL.createObjectURL(file),
+      progress: 0,
+      uploaded: false,
+      error: false,
+      url: null
+    }));
+
+    this.setState({
+      uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)
+    });
+    uploadedFiles.forEach(this.processUpload);
+  };
+  updateFile = (id, data) => {
+    this.setState({
+      uploadedFiles: this.state.uploadedFiles.map(uploadedFile => {
+        return id === uploadedFile.id
+          ? { ...uploadedFile, ...data }
+          : uploadedFile;
+      })
+    });
+  };
+
+  processUpload = uploadedFiles => {
+    const data = new FormData();
+
+    data.append("file", uploadedFiles.file, uploadedFiles.name);
+
+    api
+      .post("files", data, {
+        onUploadProgress: e => {
+          const progress = parseInt(Math.round((e.loaded * 100) / e.total));
+
+          this.updateFile(uploadedFiles.id, {
+            progress
+          });
+        }
+      })
+      .then(response => {
+        console.log(response);
+        this.updateFile(uploadedFiles.id, {
+          uploaded: true,
+          id: response.data.id,
+          url: response.data.url
+        });
+      })
+      .catch(response => {
+        this.updateFile(uploadedFiles.id, {
+          error: true
+        });
+      });
+  };
+
+  handleDeleteFile = async id => {
+    await api.delete(`files/${id}`);
+    this.setState({
+      uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id)
+    });
   };
 
   async componentDidMount() {
@@ -99,9 +165,11 @@ class Posts extends Component {
       selectedOption,
       category,
       subCategory,
-      selectedSubCategory
+      selectedSubCategory,
+      uploadedFiles
     } = this.state;
-    console.log(`é `, subCategory);
+
+    console.log(uploadedFiles);
     return (
       <Container>
         <Row>
@@ -156,6 +224,13 @@ class Posts extends Component {
                       )}
                     </FormGroup>
                   </Col>
+                  <ImgDropAndCrop onUpload={this.handleUpload} />
+                  {!!uploadedFiles.length && (
+                    <FileList
+                      files={uploadedFiles}
+                      onDelete={this.handleDeleteFile}
+                    />
+                  )}
                 </Row>
                 <Row>
                   <Button color="primary" size="big" type="Submit">
@@ -169,6 +244,7 @@ class Posts extends Component {
             </Modal>
           )}
         </Row>
+
         <Table bordered hover size="sm" responsive="md" className="mx-auto">
           <thead>
             <tr className="mx-auto">
@@ -210,12 +286,11 @@ class Posts extends Component {
 }
 
 const mapStateToProps = state => ({
-  post: state.post,
-  category: state.category
+  post: state.post
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ ...PostActions, ...CategoryActions }, dispatch);
+  bindActionCreators(PostActions, dispatch);
 
 export default connect(
   mapStateToProps,
