@@ -86,7 +86,14 @@ class Posts extends Component {
     const type = selectedType.name;
 
     console.log(title, description, url, sub_category_id, file_id, type);
-    createPostRequest(title, description, url, sub_category_id, file_id, type);
+    createPostRequest({
+      title,
+      description,
+      url,
+      sub_category_id,
+      file_id,
+      type
+    });
   };
 
   handleChangeCategory = selectedCategory => {
