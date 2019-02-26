@@ -17,7 +17,7 @@ export default class ImgDropAndCrop extends Component {
   render() {
     const { onUpload } = this.props;
     return (
-      <Dropzone accept="image/*" onDropAccepted={onUpload}>
+      <Dropzone accept="image/*" onDropAccepted={onUpload} multiple={false}>
         {({ getRootProps, getInputProps, isDragActive, isDragReject }) => (
           <DropContainer
             {...getRootProps()}

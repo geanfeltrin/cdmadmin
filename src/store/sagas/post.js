@@ -12,19 +12,20 @@ export function* getPost() {
 
 export function* createPost({
   title,
-  file_id,
-  sub_category_id,
   description,
   url,
+  sub_category_id,
+  file_id,
   type
 }) {
   try {
+    console.log(title, description, url, sub_category_id, file_id, type);
     const response = yield call(api.post, "post", {
       title,
-      file_id,
-      sub_category_id,
       description,
       url,
+      sub_category_id,
+      file_id,
       type
     });
 
