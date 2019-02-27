@@ -17,9 +17,9 @@ export default Creators;
 /* Initial State */
 
 export const INITIAL_STATE = Immutable({
-  permission: localStorage.getItem("@cdm:permission") || null,
-  signedIn: !!localStorage.getItem("@cdm:token"),
-  token: localStorage.getItem("@cdm:token") || null
+  permission: localStorage.getItem("@cdm-adm:permission") || null,
+  signedIn: !!localStorage.getItem("@cdm-adm:token"),
+  token: localStorage.getItem("@cdm-adm:token") || null
 });
 
 /* Reducers */

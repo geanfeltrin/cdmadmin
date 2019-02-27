@@ -200,9 +200,8 @@ class Posts extends Component {
       selectedCategory,
       selectedType,
       selectedSubCategory,
-      uploadedFiles,
-      type,
-      selectedType
+      uploadedFiles      
+      
     } = this.state;
 
     return (

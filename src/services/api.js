@@ -6,7 +6,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(config => {
-  const { token } = store.getState().auth;
+  const token = localStorage.getItem("@cdm-adm:token");
   const { active: category } = store.getState().category;
   const headers = { ...config.headers };
 
@@ -16,6 +16,9 @@ api.interceptors.request.use(config => {
   if (category) {
     headers.CATEGORY = category.slug;
   }
+
+  console.log(headers);
+  console.log(token);
 
   return { ...config, headers };
 });
