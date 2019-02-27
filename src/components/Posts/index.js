@@ -53,7 +53,9 @@ class Posts extends Component {
     category: "",
     subCategory: null,
     selectedSubCategory: null,
-    uploadedFiles: []
+    uploadedFiles: [],
+    type: [{ name: "privado", id: "0" }, { name: "publico", id: "1" }],
+    selectedType: null
   };
 
   handleInputChange = e => {
@@ -64,7 +66,13 @@ class Posts extends Component {
     e.preventDefault();
 
     const { createPostRequest } = this.props;
-    const { postTitle, postDescription } = this.state;
+    const {
+      postTitle,
+      postDescription,
+      uploadedFiles,
+      subCategory,
+      type
+    } = this.state;
 
     createPostRequest(postTitle, postDescription);
   };
@@ -81,6 +89,11 @@ class Posts extends Component {
     this.setState({
       selectedSubCategory
     });
+  };
+
+  handleChangeType = selectedType => {
+    this.setState({ selectedType });
+    console.log("Opção type", selectedType);
   };
 
   handleUpload = files => {
@@ -166,10 +179,11 @@ class Posts extends Component {
       category,
       subCategory,
       selectedSubCategory,
-      uploadedFiles
+      uploadedFiles,
+      type,
+      selectedType
     } = this.state;
 
-    console.log(uploadedFiles);
     return (
       <Container>
         <Row>
@@ -201,6 +215,15 @@ class Posts extends Component {
                         id="postDescriptionId"
                         placeholder="Digite o titulo da postagem"
                       />
+                      <Label for="type">Type</Label>
+                      <Select
+                        options={type}
+                        getOptionLabel={type => type.name}
+                        getOptionValue={type => type.id}
+                        value={selectedType}
+                        onChange={this.handleChangeType}
+                      />
+
                       <Label for="Permissoes">Categoria</Label>
                       <Select
                         options={category}
@@ -267,7 +290,7 @@ class Posts extends Component {
                 <td>
                   <img
                     className="thumbnail"
-                    src={post.imagem}
+                    src={post.file.url}
                     alt="Thumbnail"
                   />
                 </td>
