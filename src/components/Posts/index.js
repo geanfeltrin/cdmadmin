@@ -49,13 +49,14 @@ class Posts extends Component {
   state = {
     postTitle: "",
     postDescription: "",
-    selectedOption: null,
+    postUrl: "",
+    PostType: [{ id: 0, name: "public" }, { id: 1, name: "privado" }],
     category: "",
     subCategory: null,
+    selectedCategory: null,
     selectedSubCategory: null,
-    uploadedFiles: [],
-    type: [{ name: "privado", id: "0" }, { name: "publico", id: "1" }],
-    selectedType: null
+    selectedType: null,
+    uploadedFiles: []
   };
 
   handleInputChange = e => {
@@ -69,33 +70,50 @@ class Posts extends Component {
     const {
       postTitle,
       postDescription,
+      postUrl,
+      selectedSubCategory,
       uploadedFiles,
-      subCategory,
-      type
+      selectedType
     } = this.state;
 
-    createPostRequest(postTitle, postDescription);
+    const [uploadedFilesId] = uploadedFiles;
+
+    const title = postTitle;
+    const description = postDescription;
+    const url = postUrl;
+    const sub_category_id = selectedSubCategory.id;
+    const file_id = uploadedFilesId.id;
+    const type = selectedType.name;
+
+    console.log(title, description, url, sub_category_id, file_id, type);
+    createPostRequest({
+      title,
+      description,
+      url,
+      sub_category_id,
+      file_id,
+      type
+    });
   };
 
-  handleChange = selectedOption => {
+  handleChangeCategory = selectedCategory => {
     this.setState({
-      selectedOption,
-      subCategory: selectedOption.subCategories,
+      selectedCategory,
+      subCategory: selectedCategory.subCategories,
       selectedSubCategory: null
     });
   };
 
-  handleChange2 = selectedSubCategory => {
+  handleChangeSubCategory = selectedSubCategory => {
     this.setState({
       selectedSubCategory
     });
   };
-
   handleChangeType = selectedType => {
-    this.setState({ selectedType });
-    console.log("Opção type", selectedType);
+    this.setState({
+      selectedType
+    });
   };
-
   handleUpload = files => {
     const uploadedFiles = files.map(file => ({
       file,
@@ -113,6 +131,7 @@ class Posts extends Component {
       uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)
     });
     uploadedFiles.forEach(this.processUpload);
+    console.log(uploadedFiles);
   };
   updateFile = (id, data) => {
     this.setState({
@@ -140,7 +159,6 @@ class Posts extends Component {
         }
       })
       .then(response => {
-        console.log(response);
         this.updateFile(uploadedFiles.id, {
           uploaded: true,
           id: response.data.id,
@@ -174,10 +192,13 @@ class Posts extends Component {
     const { post, openPostModal, closePostModal } = this.props;
     const {
       postTitle,
+      PostType,
+      postUrl,
       postDescription,
-      selectedOption,
       category,
       subCategory,
+      selectedCategory,
+      selectedType,
       selectedSubCategory,
       uploadedFiles,
       type,
@@ -215,22 +236,21 @@ class Posts extends Component {
                         id="postDescriptionId"
                         placeholder="Digite o titulo da postagem"
                       />
-                      <Label for="type">Type</Label>
+                      <Label for="Permissoes">Tipo</Label>
                       <Select
-                        options={type}
-                        getOptionLabel={type => type.name}
-                        getOptionValue={type => type.id}
+                        options={PostType}
+                        getOptionLabel={PostType => PostType.name}
+                        getOptionValue={PostType => PostType.id}
                         value={selectedType}
                         onChange={this.handleChangeType}
                       />
-
                       <Label for="Permissoes">Categoria</Label>
                       <Select
                         options={category}
                         getOptionLabel={category => category.name}
                         getOptionValue={category => category.id}
-                        value={selectedOption}
-                        onChange={this.handleChange}
+                        value={selectedCategory}
+                        onChange={this.handleChangeCategory}
                       />
                       {subCategory && (
                         <div>
@@ -241,13 +261,25 @@ class Posts extends Component {
                             getOptionLabel={subCategory => subCategory.name}
                             getOptionValue={subCategory => subCategory.id}
                             value={selectedSubCategory}
-                            onChange={this.handleChange2}
+                            onChange={this.handleChangeSubCategory}
                           />
                         </div>
                       )}
+                      <Label for="postUrl">Link Para o download</Label>
+                      <Input
+                        type="text"
+                        name="postUrl"
+                        value={postUrl}
+                        onChange={this.handleInputChange}
+                        id="postUrlId"
+                        placeholder="Digite o link para o download"
+                      />
                     </FormGroup>
                   </Col>
-                  <ImgDropAndCrop onUpload={this.handleUpload} />
+                  {!!uploadedFiles.length < 1 && (
+                    <ImgDropAndCrop onUpload={this.handleUpload} />
+                  )}
+
                   {!!uploadedFiles.length && (
                     <FileList
                       files={uploadedFiles}

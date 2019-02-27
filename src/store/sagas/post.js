@@ -9,22 +9,21 @@ export function* getPost() {
 
   yield put(PostAction.getPostSuccess(response.data));
 }
-
 export function* createPost({
   title,
-  file_id,
-  sub_category_id,
   description,
   url,
+  sub_category_id,
+  file_id,
   type
 }) {
   try {
     const response = yield call(api.post, "post", {
       title,
-      file_id,
-      sub_category_id,
       description,
       url,
+      sub_category_id,
+      file_id,
       type
     });
 
