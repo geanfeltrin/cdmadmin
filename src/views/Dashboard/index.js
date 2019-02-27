@@ -19,9 +19,9 @@ export default class Dashboard extends Component {
           <Col sm={2}>
             <Sidebar />
           </Col>
-          <Col sm={10}>
+          {/* <Col sm={10}>
             <Posts />
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     );

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import api from "../../../services/api";
+import api from "../../services/api";
 import Select from "react-select";
 
 import { Container } from "./styles";
@@ -19,7 +19,7 @@ import {
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import UsersActions from "../../../store/ducks/users";
+import UsersActions from "../../store/ducks/users";
 
 import Modal from "../Modal";
 class users extends Component {
