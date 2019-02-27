@@ -320,7 +320,7 @@ class Posts extends Component {
                 <td>
                   <img
                     className="thumbnail"
-                    src={post.imagem}
+                    src={post.file.url}
                     alt="Thumbnail"
                   />
                 </td>
