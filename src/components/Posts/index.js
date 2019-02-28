@@ -131,7 +131,6 @@ class Posts extends Component {
       uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)
     });
     uploadedFiles.forEach(this.processUpload);
-    console.log(uploadedFiles);
   };
   updateFile = (id, data) => {
     this.setState({
@@ -181,6 +180,8 @@ class Posts extends Component {
 
   handleDeletePost = async id => {
     await api.delete(`post/${id}`);
+    const { getPostRequest } = this.props;
+    getPostRequest();
   };
 
   async componentDidMount() {
