@@ -15,7 +15,7 @@ export function* createPost({
   url,
   sub_category_id,
   file_id,
-  type
+  type_post
 }) {
   try {
     const response = yield call(api.post, "post", {
@@ -24,7 +24,7 @@ export function* createPost({
       url,
       sub_category_id,
       file_id,
-      type
+      type: type_post
     });
 
     yield put(PostAction.createPostSuccess(response.data));

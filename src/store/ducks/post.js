@@ -14,7 +14,7 @@ const { Types, Creators } = createActions({
     "url",
     "file_id",
     "sub_category_id",
-    "type"
+    "type_post"
   ],
   createPostSuccess: ["post"]
 });

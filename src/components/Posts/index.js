@@ -83,17 +83,17 @@ class Posts extends Component {
     const url = postUrl;
     const sub_category_id = selectedSubCategory.id;
     const file_id = uploadedFilesId.id;
-    const type = selectedType.name;
+    const type_post = selectedType.name;
 
-    console.log(title, description, url, sub_category_id, file_id, type);
-    createPostRequest({
+    console.log(title, description, url, sub_category_id, file_id, type_post);
+    createPostRequest(
       title,
       description,
       url,
-      sub_category_id,
       file_id,
-      type
-    });
+      sub_category_id,
+      type_post
+    );
   };
 
   handleChangeCategory = selectedCategory => {
@@ -179,6 +179,10 @@ class Posts extends Component {
     });
   };
 
+  handleDeletePost = async id => {
+    await api.delete(`post/${id}`);
+  };
+
   async componentDidMount() {
     const { getPostRequest } = this.props;
 
@@ -200,8 +204,7 @@ class Posts extends Component {
       selectedCategory,
       selectedType,
       selectedSubCategory,
-      uploadedFiles      
-      
+      uploadedFiles
     } = this.state;
 
     return (
@@ -311,28 +314,37 @@ class Posts extends Component {
               <th>Excluir Publicação</th>
             </tr>
           </thead>
-          {post.data.map(post => (
-            <tbody key={post.id}>
-              <tr>
-                <th scope="row">{post.id}</th>
-                <td>{post.title}</td>
-                <td>{post.subcategories.name}</td>
-                <td>{post.type}</td>
-                <td>
-                  <img
-                    className="thumbnail"
-                    src={post.file.url}
-                    alt="Thumbnail"
-                  />
-                </td>
-                <td>
-                  <a href={post.url} alt={post.title}>
-                    Link
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          ))}
+          {post.data.map(post => {
+            if (post) {
+              return (
+                <tbody key={post.id}>
+                  <tr>
+                    <th scope="row">{post.id}</th>
+                    <td>{post.title}</td>
+                    <td>{post.subcategories.name}</td>
+                    <td>{post.type}</td>
+                    <td>
+                      <img
+                        className="thumbnail"
+                        src={post.file.url}
+                        alt="Thumbnail"
+                      />
+                    </td>
+                    <td>
+                      <a href={post.url} alt={post.title}>
+                        Link
+                      </a>
+                    </td>
+                    <td>
+                      <button onClick={() => this.handleDeletePost(post.id)}>
+                        Exluir
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            } else return null;
+          })}
         </Table>
       </Container>
     );
