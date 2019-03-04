@@ -67,12 +67,7 @@ class subCategory extends Component {
   }
   render() {
     const { openModal, closeModal, subCategory } = this.props;
-    const {
-      subCategoryName,
-
-      selectedOption,
-      category
-    } = this.state;
+    const { subCategoryName, selectedOption, category } = this.state;
 
     return (
       <div>

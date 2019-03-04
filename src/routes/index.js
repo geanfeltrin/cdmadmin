@@ -8,9 +8,7 @@ import Private from "./private";
 // import Admin from "./admin";
 import Guest from "./guest";
 
-// import Users from "../components/Admin/users";
-// import Category from "../components/Admin/category";
-// import Roles from "../components/Admin/roles";
+
 
 // import Main from "../views/Main";
 import SignIn from "../views/SignIn";

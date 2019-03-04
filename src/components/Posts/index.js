@@ -325,11 +325,11 @@ class Posts extends Component {
                     <td>{post.subcategories.name}</td>
                     <td>{post.type}</td>
                     <td>
-                      <img
+                      {/* <img
                         className="thumbnail"
                         src={post.file.url}
                         alt="Thumbnail"
-                      />
+                      /> */}
                     </td>
                     <td>
                       <a href={post.url} alt={post.title}>
